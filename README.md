@@ -1,7 +1,12 @@
 # GSEA-Plotting-Tools
 Functions to visualize results from GSEA. 
 
-GSEA scatter is used to create a GSEA plot (example in repository) with one or two sample files. If plotting two sample GSEA data sets, both analyses must contain the same gene sets. The genesetlist file (example in repository) contains the names of the genesets in the GSEA analysis files that you want plotted. The sample filenames will be used as the sample labels in the final plot.
+GSEA scatter is used to create a GSEA plot (example in repository) with one or two sample files. If plotting two sample GSEA data sets, both analyses must contain the same gene sets. The GSEA csv files are the enrichment results data with the column format: 
+```
+NAME	GS.br..follow.link.to.MSigDB	GS.DETAILS	SIZE	ES	NES	NOM.p.val	FDR.q.val	FWER.p.val	RANK.AT.MAX	LEADING.EDGE
+```
+
+The genesetlist file (example in repository) contains the names of the genesets in the GSEA analysis files that you want plotted. The sample filenames will be used as the sample labels in the final plot.
 
 ```
 usage:
