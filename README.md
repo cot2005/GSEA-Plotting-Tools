@@ -1,6 +1,7 @@
 # GSEA-Plotting-Tools
 Functions to visualize results from GSEA. 
 
+### GSEA scatter
 GSEA scatter is used to create a GSEA plot (example in repository) with one or two sample files. If plotting two sample GSEA data sets, both analyses must contain the same gene sets. The GSEA csv files are the enrichment results data with the column format: 
 ```
 NAME	GS.br..follow.link.to.MSigDB	GS.DETAILS	SIZE	ES	NES	NOM.p.val	FDR.q.val	FWER.p.val	RANK.AT.MAX	LEADING.EDGE
@@ -19,7 +20,7 @@ height = height of output graph
 gsea.scatter("c2_enriched_GCN2_ER_AA_4pathways.txt", c("6H_Gln_starved.csv","6H_Tunicamycin.csv"), graphname = "sampleGSEAplot.pdf")
 ```
 
-
+### GSEA compiler
 GSEA compiler is a basic function to combine the upregulated and downregulated GSEA results files into a single .csv file that can be used with the GSEA scatter function.
 ```
 usage:
