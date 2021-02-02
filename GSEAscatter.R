@@ -21,8 +21,6 @@ gsea.scatter<-function(genesetlist, gseacsvs, graphname = "GSEAplot.pdf", width 
   gseadf$LEADING.EDGE <- gsub(",", "", gseadf$LEADING.EDGE)
   gseadf$LEADING.EDGE <- as.numeric(gseadf$LEADING.EDGE)/100
   
-  #gseadf[,2] <- gsub("GO_", "", gseadf[,2])
-  #gseadf[,2] <- tolower(gseadf[,2])
   colnames(gseadf) <- c("Sample","GeneSet", "NES","FDR","GeneSetProportion")
   gseadf$GeneSet <- factor(gseadf$GeneSet, levels = gseadf$GeneSet[length(targetgeneset):1])
   narows <- which(is.na(gseadf$GeneSet == TRUE))   #removes NAs from table
