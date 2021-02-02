@@ -21,6 +21,8 @@ gsea.scatter<-function(genesetlist, gseacsvs, graphname = "GSEAplot.pdf", width 
   gseadf$LEADING.EDGE <- gsub(",", "", gseadf$LEADING.EDGE)
   gseadf$LEADING.EDGE <- as.numeric(gseadf$LEADING.EDGE)/100
   
+  #gseadf[,2] <- gsub("GO_", "", gseadf[,2])
+  #gseadf[,2] <- tolower(gseadf[,2])
   colnames(gseadf) <- c("Sample","GeneSet", "NES","FDR","GeneSetProportion")
   gseadf$GeneSet <- factor(gseadf$GeneSet, levels = gseadf$GeneSet[length(targetgeneset):1])
   narows <- which(is.na(gseadf$GeneSet == TRUE))   #removes NAs from table
@@ -30,11 +32,28 @@ gsea.scatter<-function(genesetlist, gseacsvs, graphname = "GSEAplot.pdf", width 
   
   # calculates graphing parameters
   nesmax <- max(gseadf$NES) * 1.05
-  nesmin <- min(gseadf$NES) * 1.05
-  propmax <- floor(max(gseadf$GeneSetProportion) * 10)
-  propmin <- ceiling(min(gseadf$GeneSetProportion) * 10)
-  numshapes <- 3
-  proprange <- signif(seq(propmin, propmax, (propmax - propmin)/(numshapes - 1))/10, digits = 1)
+  if (nesmax < 0) {
+    nesmax <- max(gseadf$NES) * 0.95
+  } 
+  nesmin <- min(gseadf$NES) * 0.95
+  if (nesmin < 0 ) {
+    nesmin <- min(gseadf$NES) * 1.05
+  }
+  if (numsamples == 1) {
+    numshapes <- 5
+  } else {
+    numshapes <- 3
+  }
+  propmax <- floor(max(gseadf$GeneSetProportion * 10)) + 0.5
+  if (propmax > max(gseadf$GeneSetProportion * 10)) {
+    propmax <- floor(max(gseadf$GeneSetProportion * 10))
+  }
+  propmin <- ceiling(min(gseadf$GeneSetProportion * 10)) - 0.5
+  if (propmin < min(gseadf$GeneSetProportion * 10)) {
+    propmin <- ceiling(min(gseadf$GeneSetProportion * 10))
+  }
+  proprange <- signif(seq(propmin, propmax, (propmax - propmin)/(numshapes - 1)), digits = 2)
+  proprange <- proprange/10
   shapelist <- rep(21, numshapes)
   shapekey <- 21
   if (numsamples == 2) {
@@ -44,7 +63,7 @@ gsea.scatter<-function(genesetlist, gseacsvs, graphname = "GSEAplot.pdf", width 
   
   #plots data. NES is x axis, gene set in alphabetical on Y axis, colored is FDR, Shape is sample, size is geneset proportion
   g <- ggplot(gseadf, aes(x = NES, y = GeneSet, shape = Sample, size = GeneSetProportion, color = FDR))
-  g <- g + geom_point() + scale_color_gradientn(colors = c("red", "blue2", "azure3"), breaks = c(0.05,0.25,0.5,0.75,1) ,values = scales::rescale(c(0,.05,.5)), guide = guide_colorbar(reverse = TRUE)) + 
+  g <- g + geom_point() + scale_color_gradientn(colors = c("red", "blue2", "azure3"), breaks = c(0.05,0.25,0.5,0.75,1) ,values = scales::rescale(c(0,.05,.5)), guide = guide_colorbar(reverse = TRUE), limits = c(0,1)) + 
     scale_shape_manual(values = c(16,17)) + theme_bw() + coord_cartesian(xlim = c(nesmin, nesmax)) +
     guides(size = guide_legend(override.aes = list(shape = shapelist)), shape = guide_legend(override.aes = list(shape = shapekey, size = 5))) + 
     labs(title = "GSEA Comparison", x = "Normalized Enrichment Score (NES)") + scale_size_continuous(name = "Enriched Geneset\nProportion", breaks = rep(proprange,numsamples), range=c(2,8))
